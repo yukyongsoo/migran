@@ -4,10 +4,10 @@ spring:
     username: sa
     password:
     driver-class-name: org.h2.Driver
-  batch:
-    job:
-      enabled: false
+    continue-on-error: false
   quartz:
     job-store-type: jdbc
     jdbc:
       initialize-schema: always
+  batch:
+    initialize-schema: always

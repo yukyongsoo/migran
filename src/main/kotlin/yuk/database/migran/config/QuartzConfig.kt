@@ -1,53 +1,40 @@
 package yuk.database.migran.config
 
-import org.springframework.batch.core.configuration.JobLocator
-import org.springframework.batch.core.configuration.JobRegistry
-import org.springframework.batch.core.configuration.support.JobRegistryBeanPostProcessor
-import org.springframework.batch.core.launch.JobLauncher
-import org.springframework.beans.factory.annotation.Value
-import org.springframework.context.annotation.Bean
+import org.quartz.*
 import org.springframework.context.annotation.Configuration
-import org.springframework.scheduling.quartz.CronTriggerFactoryBean
-import org.springframework.scheduling.quartz.JobDetailFactoryBean
 import org.springframework.scheduling.quartz.SchedulerFactoryBean
-
+import yuk.database.migran.base.QuartzJob
+import javax.annotation.PostConstruct
 
 @Configuration
 class QuartzConfig(
-    private val jobLauncher: JobLauncher,
-    private val jobLocator: JobLocator
+    private val schedulerFactoryBean: SchedulerFactoryBean,
 ) {
-    @Bean
-    fun jobRegistryBeanPostProcessor(jobRegistry: JobRegistry): JobRegistryBeanPostProcessor {
-        val jobRegistryBeanPostProcessor = JobRegistryBeanPostProcessor()
-        jobRegistryBeanPostProcessor.setJobRegistry(jobRegistry)
-        return jobRegistryBeanPostProcessor
+    @PostConstruct
+    fun initialize() {
+        val jobDetail = buildJobDetail(QuartzJob::class.java, "test", "test2", mapOf())
+
+        schedulerFactoryBean.scheduler.scheduleJob(
+            jobDetail,
+            buildCronJobTrigger("0/5 * * * * ?")
+        )
     }
 
-    @Bean
-    fun jobDetailFactoryBean(): JobDetailFactoryBean {
-        val jobDetailFactoryBean = JobDetailFactoryBean()
-        jobDetailFactoryBean.setJobClass(QuartzJob::class.java)
-        val map = mutableMapOf<String, Any>()
-        map["jobName"] = "migranJob"
-        map["jobLauncher"] = jobLauncher
-        map["jobLocator"] = jobLocator
-        jobDetailFactoryBean.setJobDataAsMap(map)
-        return jobDetailFactoryBean
+    fun buildCronJobTrigger(scheduleExpr: String): Trigger? {
+        return TriggerBuilder.newTrigger()
+            .withSchedule(CronScheduleBuilder.cronSchedule(scheduleExpr))
+            .build()
     }
 
-    @Bean
-    fun cronTriggerFactoryBean(): CronTriggerFactoryBean {
-        val cronTriggerFactoryBean = CronTriggerFactoryBean()
-        cronTriggerFactoryBean.setJobDetail(jobDetailFactoryBean().getObject()!!)
-        cronTriggerFactoryBean.setCronExpression("0 0/5 * * * ?")
-        return cronTriggerFactoryBean
+    fun buildJobDetail(job: Class<out Job>, name: String, desc: String, params: Map<out String, Any>): JobDetail {
+        val jobDataMap = JobDataMap()
+        jobDataMap.putAll(params)
+        return JobBuilder
+            .newJob(job)
+            .withIdentity(name)
+            .withDescription(desc)
+            .usingJobData(jobDataMap)
+            .build()
     }
 
-    @Bean
-    fun schedulerFactoryBean(): SchedulerFactoryBean {
-        val schedulerFactoryBean = SchedulerFactoryBean()
-        schedulerFactoryBean.setTriggers(cronTriggerFactoryBean().getObject())
-        return schedulerFactoryBean
-    }
 }
