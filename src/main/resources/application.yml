@@ -11,3 +11,8 @@ spring:
       initialize-schema: always
   batch:
     initialize-schema: always
+    job:
+      enabled: false
+  h2:
+    console:
+      enabled: true

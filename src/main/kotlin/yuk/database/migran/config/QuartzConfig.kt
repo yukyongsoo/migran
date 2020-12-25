@@ -5,6 +5,11 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.scheduling.quartz.SchedulerFactoryBean
 import yuk.database.migran.base.QuartzJob
 import javax.annotation.PostConstruct
+import org.springframework.batch.core.configuration.support.JobRegistryBeanPostProcessor
+
+import org.springframework.batch.core.configuration.JobRegistry
+import org.springframework.context.annotation.Bean
+
 
 @Configuration
 class QuartzConfig(
@@ -19,6 +24,8 @@ class QuartzConfig(
             buildCronJobTrigger("0/5 * * * * ?")
         )
     }
+
+
 
     fun buildCronJobTrigger(scheduleExpr: String): Trigger? {
         return TriggerBuilder.newTrigger()
