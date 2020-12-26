@@ -16,5 +16,7 @@ class TestBatch(
         batchJobBuilder.setStep(batchStepBuilder) {
             val reader = it.getReaderBuilder("mathflat")
         }
+
+        batchJobBuilder.build()
     }
 }

@@ -8,6 +8,7 @@ import org.springframework.batch.core.repository.JobRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Lazy
 import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
 import javax.sql.DataSource
@@ -31,6 +32,7 @@ class BatchJobBuilder(
     }
 
     @Bean
+    @Lazy
     fun build(): Job {
         var job = jobBuilderFactory.get(name)
             .preventRestart()
