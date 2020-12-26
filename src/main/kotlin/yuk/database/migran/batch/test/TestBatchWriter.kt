@@ -1,4 +1,4 @@
-package yuk.database.migran.batch
+package yuk.database.migran.batch.test
 
 import org.springframework.batch.item.ItemWriter
 

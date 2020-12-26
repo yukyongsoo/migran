@@ -7,14 +7,17 @@ import org.springframework.batch.core.configuration.JobLocator
 import org.springframework.batch.core.launch.JobLauncher
 import org.springframework.scheduling.quartz.QuartzJobBean
 import org.springframework.batch.core.JobParameters
+import org.springframework.beans.factory.annotation.Autowired
 
+class QuartzJob : QuartzJobBean() {
+    @Autowired
+    private lateinit var jobLocator: JobLocator
+    @Autowired
+    private lateinit var jobLauncher: JobLauncher
 
-class QuartzJob(
-    private val jobLocator: JobLocator,
-    private val jobLauncher: JobLauncher
-) : QuartzJobBean() {
     override fun executeInternal(context: JobExecutionContext) {
-        val job: Job = jobLocator.getJob("testJob")
+        val name = context.mergedJobDataMap["batchName"].toString()
+        val job: Job = jobLocator.getJob(name)
         val params = JobParametersBuilder()
             .addString("JobID", System.currentTimeMillis().toString())
             .toJobParameters()
