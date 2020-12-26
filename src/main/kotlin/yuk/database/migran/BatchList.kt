@@ -4,7 +4,7 @@ class BatchList {
     private val jobList: MutableList<QuartzJobDeclaration> = mutableListOf()
 
     init {
-        addJob("testJob", "testJob", "0 0/1 * 1/1 * ? *", "testJob")
+        addJob("testJob", "testJob", "0 0/1 * 1/1 * ? *", "testBatch")
     }
 
     private fun addJob(name: String, desc: String, cron: String, batchName: String) {

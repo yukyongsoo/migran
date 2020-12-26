@@ -9,7 +9,7 @@ import org.springframework.scheduling.quartz.QuartzJobBean
 import org.springframework.batch.core.JobParameters
 import org.springframework.beans.factory.annotation.Autowired
 
-class QuartzJob : QuartzJobBean() {
+class QuartzJob private constructor(): QuartzJobBean() {
     @Autowired
     private lateinit var jobLocator: JobLocator
     @Autowired
