@@ -16,7 +16,7 @@ class QuartzConfig(
     @PostConstruct
     fun initialize() {
         jobList.forEach {
-            val jobDetail = buildJobDetail(QuartzJob::class.java, it.name, it.desc, mapOf("batchName" to it.batchName))
+            val jobDetail = buildJobDetail<QuartzJob>(it.name, it.desc, mapOf("batchName" to it.batchName))
 
             schedulerFactoryBean.scheduler.scheduleJob(
                 jobDetail,
@@ -31,8 +31,7 @@ class QuartzConfig(
             .build()
     }
 
-    private fun buildJobDetail(
-        job: Class<out Job>,
+    private inline fun <reified T : Job> buildJobDetail(
         name: String,
         desc: String,
         params: Map<String, String>
@@ -40,7 +39,7 @@ class QuartzConfig(
         val jobDataMap = JobDataMap()
         jobDataMap.putAll(params)
         return JobBuilder
-            .newJob(job)
+            .newJob(T::class.java)
             .withIdentity(name)
             .withDescription(desc)
             .usingJobData(jobDataMap)

@@ -31,23 +31,23 @@ class BatchStepBuilder<I, O>(
         this.chunkSize = chunkSize
     }
 
-    fun getReaderBuilder(name: String): StepReaderBuilder<I> {
-        val dataSource = getDataSource(name)
-        return StepReaderBuilder<I>(dataSource)
+    fun getReaderBuilder(datasourceName: String): StepReaderBuilder<I> {
+        val dataSource = getDataSource(datasourceName)
+        return StepReaderBuilder<I>(dataSource, chunkSize)
     }
 
-    fun getProcessBuilder(name: String): StepProcessBuilder<I, O> {
-        val dataSource = getDataSource(name)
+    fun getProcessBuilder(datasourceName: String): StepProcessBuilder<I, O> {
+        val dataSource = getDataSource(datasourceName)
         return StepProcessBuilder<I, O>(dataSource)
     }
 
-    fun getWriterBuilder(name: String): StepWriterBuilder<O> {
-        val dataSource = getDataSource(name)
+    fun getWriterBuilder(datasourceName: String): StepWriterBuilder<O> {
+        val dataSource = getDataSource(datasourceName)
         return StepWriterBuilder<O>(dataSource)
     }
 
-    private fun getDataSource(name: String): DataSource {
-        return when (name) {
+    private fun getDataSource(datasourceName: String): DataSource {
+        return when (datasourceName) {
             "pulley" -> pulleyDataSource
             "mathflat" -> mathflatDataSource
             else -> throw DataSourceNotFoundException()

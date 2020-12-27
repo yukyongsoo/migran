@@ -17,7 +17,7 @@ class QuartzJob private constructor(): QuartzJobBean() {
 
     override fun executeInternal(context: JobExecutionContext) {
         val name = context.mergedJobDataMap["batchName"].toString()
-        val job: Job = jobLocator.getJob(name)
+        val job = jobLocator.getJob(name)
         val params = JobParametersBuilder()
             .addString("JobID", System.currentTimeMillis().toString())
             .toJobParameters()
