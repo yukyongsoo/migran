@@ -1,22 +1,22 @@
 spring:
   datasource:
     batch:
-      jdbc-url: jdbc:mysql://localhost:3306/batch?serverTimezone=UTC
-      username: user
-      password: 1234
-      driver-class-name: com.mysql.cj.jdbc.Driver
+      jdbc-url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+      username: sa
+      password:
+      driver-class-name: org.h2.Driver
       continue-on-error: false
     pulley:
-      jdbc-url: jdbc:mysql://localhost:3306/batch?serverTimezone=UTC
-      username: user
-      password: 1234
-      driver-class-name: com.mysql.cj.jdbc.Driver
+      jdbc-url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+      username: sa
+      password:
+      driver-class-name: org.h2.Driver
       continue-on-error: false
     mathflat:
-      jdbc-url: jdbc:mysql://localhost:3306/batch?serverTimezone=UTC
-      username: user
-      password: 1234
-      driver-class-name: com.mysql.cj.jdbc.Driver
+      jdbc-url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+      username: sa
+      password:
+      driver-class-name: org.h2.Driver
       continue-on-error: false
   quartz:
     job-store-type: jdbc
@@ -29,3 +29,19 @@ spring:
   h2:
     console:
       enabled: true
+cloud:
+  aws:
+    credentials:
+      access-key: AKIA6F22OSUAPBQGEP5I
+      secret-key: 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
+    region:
+      static: ap-northeast-2
+      auto: false
+    stack:
+      auto: false
+logging:
+  level:
+    com:
+      amazonaws:
+        util:
+          EC2MetadataUtils: error

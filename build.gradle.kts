@@ -20,6 +20,9 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-batch")
     implementation("org.springframework.boot:spring-boot-starter-quartz")
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
+
+    implementation("org.springframework.cloud:spring-cloud-starter-aws:2.2.5.RELEASE")
 
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
@@ -28,7 +31,7 @@ dependencies {
 
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
-    //runtimeOnly("com.h2database:h2")
+    runtimeOnly("com.h2database:h2")
     runtimeOnly("mysql:mysql-connector-java")
 
     developmentOnly("org.springframework.boot:spring-boot-devtools")

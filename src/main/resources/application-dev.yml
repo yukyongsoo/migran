@@ -1,0 +1,44 @@
+spring:
+  datasource:
+    batch:
+      jdbc-url: jdbc:mysql://localhost:3306/batch?serverTimezone=UTC
+      username: user
+      password: 1234
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      continue-on-error: false
+    pulley:
+      jdbc-url: jdbc:mysql://localhost:3306/batch?serverTimezone=UTC
+      username: user
+      password: 1234
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      continue-on-error: false
+    mathflat:
+      jdbc-url: jdbc:mysql://localhost:3306/batch?serverTimezone=UTC
+      username: user
+      password: 1234
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      continue-on-error: false
+  quartz:
+    job-store-type: jdbc
+    jdbc:
+      initialize-schema: always
+  batch:
+    initialize-schema: always
+    job:
+      enabled: false
+cloud:
+  aws:
+    credentials:
+      access-key: AKIA6F22OSUAPBQGEP5I
+      secret-key: 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
+    region:
+      static: ap-northeast-2
+      auto: false
+    stack:
+      auto: false
+management:
+  metrics:
+    export:
+      cloudwatch:
+        batch-size: 20
+        namespace: mathflat-batch
