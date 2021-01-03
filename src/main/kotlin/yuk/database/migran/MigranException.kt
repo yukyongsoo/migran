@@ -17,6 +17,6 @@ class BatchCurrentlyNotRunningException(
     message: String = "Batch Currently Not Started"
 ) : MigranException(message)
 
-class BatchInstanceNotFoundException(
-    message: String = "Batch Instance Not Founded"
+class BatchNotFoundException(
+    message: String = "Batch Not Founded"
 ) : MigranException(message)
