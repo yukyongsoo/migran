@@ -5,7 +5,7 @@ class BatchList {
 
     init {
         addJob("testJob", "실행기1", "0 0/1 * 1/1 * ? *", "testBatch")
-        addJob("testJob2", "실행기2", "0 0/1 * 1/1 * ? *", "testBatch2")
+        addJob("sms", "토스트 문자 내용 업데이터", "0 0/1 * 1/1 * ? *", "sms")
     }
 
     private fun addJob(name: String, desc: String, cron: String, batchName: String) {

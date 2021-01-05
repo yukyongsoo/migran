@@ -26,9 +26,6 @@ spring:
     initialize-schema: always
     job:
       enabled: false
-  h2:
-    console:
-      enabled: true
 cloud:
   aws:
     credentials:

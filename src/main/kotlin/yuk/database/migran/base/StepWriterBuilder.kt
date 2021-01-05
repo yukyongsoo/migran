@@ -6,14 +6,15 @@ import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilde
 import javax.sql.DataSource
 
 class StepWriterBuilder<O>(private val dataSource: DataSource) {
-    fun <O> getItemWriter(stepName: String, f: () -> O): ItemWriter<O> {
+    fun getItemWriter(stepName: String, f: () -> O): ItemWriter<O> {
         return ItemWriter<O> { f() }
     }
 
-    fun <O> getJdbcItemWriter(sql: String): ItemWriter<O> {
+    fun getJdbcItemWriter(sql: String): ItemWriter<O> {
         return JdbcBatchItemWriterBuilder<O>()
             .dataSource(dataSource)
             .sql(sql)
+            .beanMapped()
             .build()
     }
 }
