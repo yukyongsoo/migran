@@ -52,7 +52,7 @@
 
         var lengths = array[0].map(function(_, i) {
             var col = array.map(function(row) {
-                if (row[i] != undefined) {
+                if (row[i] !== undefined) {
                     var len = strlen(row[i]);
                     if (row[i].match(/\t/g)) {
                         len += row[i].match(/\t/g).length*3;

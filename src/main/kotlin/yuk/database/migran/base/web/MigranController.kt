@@ -12,7 +12,7 @@ import javax.print.attribute.standard.JobName
 class MigranController(
     private val migranService: MigranService
 ) {
-    @GetMapping
+    @GetMapping("/health")
     fun getHealth() {
 
     }
