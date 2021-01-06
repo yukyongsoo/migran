@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
 import yuk.database.migran.DataSourceNotFoundException
+import yuk.database.migran.batch.sms.MathflatSms
 import javax.sql.DataSource
 
 @Component
