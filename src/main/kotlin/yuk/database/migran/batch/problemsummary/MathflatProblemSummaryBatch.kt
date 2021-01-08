@@ -11,7 +11,7 @@ import javax.annotation.PostConstruct
 @Service
 class MathflatProblemSummaryBatch(
     private val batchJobBuilder: BatchJobBuilder,
-    private val batchStepBuilder: BatchStepBuilder<MathflatSms, MathflatProblemSummary?>
+    private val batchStepBuilder: BatchStepBuilder<MathflatSms, MathflatProblem?>
 ) {
     @PostConstruct
     fun initialize() {
@@ -35,11 +35,11 @@ class MathflatProblemSummaryBatch(
         TODO("Not yet implemented")
     }
 
-    private fun getProcessor(processBuilder: StepProcessBuilder<MathflatSms, MathflatProblemSummary?>): ItemProcessor<MathflatSms, MathflatProblemSummary?> {
+    private fun getProcessor(processBuilder: StepProcessBuilder<MathflatSms, MathflatProblem?>): ItemProcessor<MathflatSms, MathflatProblem?> {
         TODO("Not yet implemented")
     }
 
-    private fun getWriter(writerBuilder: StepWriterBuilder<MathflatProblemSummary?>): ItemWriter<MathflatProblemSummary?> {
+    private fun getWriter(writerBuilder: StepWriterBuilder<MathflatProblem?>): ItemWriter<MathflatProblem?> {
         TODO("Not yet implemented")
     }
 }
