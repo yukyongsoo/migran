@@ -11,7 +11,7 @@ import javax.annotation.PostConstruct
 @Service
 class MathflatProblemSummaryBatch(
     private val batchJobBuilder: BatchJobBuilder,
-    private val batchStepBuilder: BatchStepBuilder<MathflatSms, MathflatProblem?>
+    private val batchStepBuilder: BatchStepBuilder<MathflatProblem, MathflatProblemSummary?>
 ) {
     @PostConstruct
     fun initialize() {
@@ -31,15 +31,24 @@ class MathflatProblemSummaryBatch(
         batchJobBuilder.build()
     }
 
-    private fun getReader(readerBuilder: StepReaderBuilder<MathflatSms>): ItemReader<MathflatSms> {
-        TODO("Not yet implemented")
+    private fun getReader(readerBuilder: StepReaderBuilder<MathflatProblem>): ItemReader<MathflatProblem> {
+        return readerBuilder.getJdbcReader<MathflatProblem>("problemReadStep", "select id from problem", mapOf())
     }
 
-    private fun getProcessor(processBuilder: StepProcessBuilder<MathflatSms, MathflatProblem?>): ItemProcessor<MathflatSms, MathflatProblem?> {
-        TODO("Not yet implemented")
+    private fun getProcessor(processBuilder: StepProcessBuilder<MathflatProblem, MathflatProblemSummary?>)
+            : ItemProcessor<MathflatProblem, MathflatProblemSummary?> {
+        return processBuilder.getItemProcessor("problemProcessStep") {
+            // TODO :: we need develop
+            MathflatProblemSummary(123, 1, 1, 1)
+        }
     }
 
-    private fun getWriter(writerBuilder: StepWriterBuilder<MathflatProblem?>): ItemWriter<MathflatProblem?> {
-        TODO("Not yet implemented")
+    private fun getWriter(writerBuilder: StepWriterBuilder<MathflatProblemSummary?>): ItemWriter<MathflatProblemSummary?> {
+        return writerBuilder.getJdbcItemWriter(
+            """INSERT INTO problemSummary (total_used,correct_times,wrong_times)
+             VALUES (:total_used,:correct_times,:wrong_times) ON DUPLICATE KEY UPDATE
+              problemId = :problemId
+                """
+        )
     }
 }
