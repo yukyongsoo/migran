@@ -11,7 +11,7 @@ import kotlin.random.Random
 @Service
 class TestBatch(
     private val batchJobBuilder: BatchJobBuilder,
-    private val batchStepBuilder: BatchStepBuilder<String, String>
+    private val batchStepBuilder: BatchStepBuilder<String, String?>
 ) {
     @PostConstruct
     fun initialize() {
@@ -41,13 +41,13 @@ class TestBatch(
         }
     }
 
-    private fun getTestProcessor(processBuilder: StepProcessBuilder<String, String>): ItemProcessor<String, String> {
-        return processBuilder.getItemProcessor("testProcessStep") {
+    private fun getTestProcessor(processBuilder: StepProcessBuilder<String, String?>): ItemProcessor<String, String?> {
+        return processBuilder.getItemProcessor("testProcessStep") { _, it ->
             return@getItemProcessor it
         }
     }
 
-    private fun getTestWriter(writerBuilder: StepWriterBuilder<String>): ItemWriter<String> {
+    private fun getTestWriter(writerBuilder: StepWriterBuilder<String?>): ItemWriter<String?> {
         return writerBuilder.getItemWriter("testWriteStep") {
             println("asdfasdf")
             return@getItemWriter "asdfasdf"

@@ -40,28 +40,30 @@ class MathflatSmsResultBatch(
     }
 
     private fun getProcessor(processBuilder: StepProcessBuilder<MathflatSms, MathflatSms?>) =
-        processBuilder.getItemProcessor("smsProcessStep") {
-            if (it.requestId == null) return@getItemProcessor null
+        processBuilder.getItemProcessor("smsProcessStep") { _, sms ->
+            if (sms.requestId == null) return@getItemProcessor null
 
             val response = toastSmsRequester.getResult(
-                it.type!!,
-                it.requestId!!
+                sms.type,
+                sms.requestId!!
             )!!
 
-            return@getItemProcessor if (response.body!!.data != null) {
-                it.responseStatusCode = response.body!!.data!!.resultCode
-                it.responseMessage = response.body!!.data!!.resultCodeName
-                it.sendDate = LocalDateTime.parse(response.body!!.data!!.resultDate, dateTimeFormatter).toDate()
-                it.status = if (it.requestStatusCode == 1000) "SUCCESS"
+            return@getItemProcessor if (response.body?.data != null) {
+                sms.responseStatusCode = response.body!!.data!!.resultCode
+                sms.responseMessage = response.body!!.data!!.resultCodeName
+                sms.sendDate = LocalDateTime.parse(response.body!!.data!!.resultDate, dateTimeFormatter).toDate()
+                sms.status = if (sms.requestStatusCode == 1000) "SUCCESS"
                 else "FAIL"
-                it
+                sms
             } else null
         }
 
 
     private fun getWriter(writerBuilder: StepWriterBuilder<MathflatSms?>) =
-        writerBuilder.getJdbcItemWriter("""update SMSSend set 
+        writerBuilder.getJdbcItemWriter(
+            """update SMSSend set 
                responseStatusCode = :responseStatusCode, responseMessage = :responseMessage, sendDate = :sendDate
                where id = :id
-            """)
+            """
+        )
 }

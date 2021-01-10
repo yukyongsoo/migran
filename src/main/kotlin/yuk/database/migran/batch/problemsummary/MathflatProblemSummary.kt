@@ -1,8 +1,8 @@
 package yuk.database.migran.batch.problemsummary
 
-data class MathflatProblemSummary(
-    val problemId: Int,
-    val total_used: Long,
-    val correct_times: Long,
-    val wrong_times: Long
-)
+class MathflatProblemSummary {
+    var problemId: Int = 0
+    var totalUsed: Long = 0
+    var correctTimes: Long = 0
+    var wrongTimes: Long = 0
+}

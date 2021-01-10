@@ -3,9 +3,9 @@ package yuk.database.migran.batch.problemsummary
 import org.springframework.batch.item.ItemProcessor
 import org.springframework.batch.item.ItemReader
 import org.springframework.batch.item.ItemWriter
+import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Service
 import yuk.database.migran.base.*
-import yuk.database.migran.batch.sms.MathflatSms
 import javax.annotation.PostConstruct
 
 @Service
@@ -37,17 +37,66 @@ class MathflatProblemSummaryBatch(
 
     private fun getProcessor(processBuilder: StepProcessBuilder<MathflatProblem, MathflatProblemSummary?>)
             : ItemProcessor<MathflatProblem, MathflatProblemSummary?> {
-        return processBuilder.getItemProcessor("problemProcessStep") {
-            // TODO :: we need develop
-            MathflatProblemSummary(123, 1, 1, 1)
+        return processBuilder.getItemProcessor("problemProcessStep") { dataSource, item ->
+            val parameterMap = mapOf("id" to item.id)
+
+            //TODO :: fix query not working
+            val workbookScoringList = JdbcTemplate(dataSource).queryForList<MathflatWorkbookScoring>(
+                """select problem_id, result, count(*) as count
+                     from custom_workbook_problem
+                     join student_workbook_scoring on problem_id = :id and
+                     custom_workbook_problem.workbook_problem_id = student_workbook_scoring.workbook_problem_id
+                     group by problem_id, result
+                """,
+                parameterMap
+            )
+
+            val worksheetScoringList = JdbcTemplate(dataSource).queryForList<MathflatWorksheetScoring>(
+                """
+                    select problem_id, result, count(*) as count
+                     from worksheet_problem
+                     join student_worksheet_scoring on problem_id = :id and 
+                     worksheet_problem.id = student_worksheet_scoring.worksheet_problem_id
+                     group by problem_id, result;
+                """, parameterMap
+            )
+
+            countProblemSummary(item.id, workbookScoringList, worksheetScoringList)
         }
+    }
+
+    private fun countProblemSummary(
+        problemId: Int,
+        workbookScoringList: MutableList<MathflatWorkbookScoring>,
+        worksheetScoringList: MutableList<MathflatWorksheetScoring>
+    ): MathflatProblemSummary {
+        val summary = MathflatProblemSummary()
+        summary.problemId = problemId
+
+        workbookScoringList.forEach {
+            summary.totalUsed += it.count
+            if (it.result == "CORRECT")
+                summary.correctTimes += it.count
+            else if (it.result == "WRONG")
+                summary.wrongTimes += it.count
+        }
+
+        worksheetScoringList.forEach {
+            summary.totalUsed += it.count
+            if (it.result == "CORRECT")
+                summary.correctTimes += it.count
+            else if (it.result == "WRONG")
+                summary.wrongTimes += it.count
+        }
+
+        return summary
     }
 
     private fun getWriter(writerBuilder: StepWriterBuilder<MathflatProblemSummary?>): ItemWriter<MathflatProblemSummary?> {
         return writerBuilder.getJdbcItemWriter(
-            """INSERT INTO problemSummary (total_used,correct_times,wrong_times)
-             VALUES (:total_used,:correct_times,:wrong_times) ON DUPLICATE KEY UPDATE
-              problemId = :problemId
+            """INSERT INTO problem_summary (problem_id,total_used,correct_times,wrong_times)
+             VALUES (:problemId,:totalUsed,:correctTimes,:wrongTimes) ON DUPLICATE KEY UPDATE
+              total_used = :totalUsed, correct_times = :correctTimes, wrong_times = :wrongTimes
                 """
         )
     }

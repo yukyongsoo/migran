@@ -1,5 +1,5 @@
 package yuk.database.migran.batch.problemsummary
 
-data class MathflatProblem(
-    val id: Int
-)
+class MathflatProblem {
+    var id: Int = 0
+}
