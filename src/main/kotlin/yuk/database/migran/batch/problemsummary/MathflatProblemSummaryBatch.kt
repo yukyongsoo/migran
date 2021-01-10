@@ -4,6 +4,7 @@ import org.springframework.batch.item.ItemProcessor
 import org.springframework.batch.item.ItemReader
 import org.springframework.batch.item.ItemWriter
 import org.springframework.jdbc.core.JdbcTemplate
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.stereotype.Service
 import yuk.database.migran.base.*
 import javax.annotation.PostConstruct
@@ -40,8 +41,7 @@ class MathflatProblemSummaryBatch(
         return processBuilder.getItemProcessor("problemProcessStep") { dataSource, item ->
             val parameterMap = mapOf("id" to item.id)
 
-            //TODO :: fix query not working
-            val workbookScoringList = JdbcTemplate(dataSource).queryForList<MathflatWorkbookScoring>(
+            val workbookScoringList = NamedParameterJdbcTemplate(dataSource).queryForList<MathflatWorkbookScoring>(
                 """select problem_id, result, count(*) as count
                      from custom_workbook_problem
                      join student_workbook_scoring on problem_id = :id and
@@ -51,7 +51,7 @@ class MathflatProblemSummaryBatch(
                 parameterMap
             )
 
-            val worksheetScoringList = JdbcTemplate(dataSource).queryForList<MathflatWorksheetScoring>(
+            val worksheetScoringList = NamedParameterJdbcTemplate(dataSource).queryForList<MathflatWorksheetScoring>(
                 """
                     select problem_id, result, count(*) as count
                      from worksheet_problem
