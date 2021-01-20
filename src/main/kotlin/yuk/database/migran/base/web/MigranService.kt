@@ -67,7 +67,8 @@ class MigranService(
     fun startBatch(jobName: String) {
         jobOperator.jobNames.firstOrNull { it == jobName } ?: throw BatchNotFoundException()
 
-        val instance = jobExplorer.findRunningJobExecutions("testBatch")
+        val instance = jobExplorer.findRunningJobExecutions(jobName)
+
         instance.forEach {
             if (it.status == BatchStatus.STARTING || it.status == BatchStatus.STARTING)
                 throw BatchAlreadyStartedException()

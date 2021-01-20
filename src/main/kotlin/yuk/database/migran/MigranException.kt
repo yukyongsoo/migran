@@ -20,3 +20,15 @@ class BatchCurrentlyNotRunningException(
 class BatchNotFoundException(
     message: String = "Batch Not Founded"
 ) : MigranException(message)
+
+class BatchNotHaveStepException(
+    message: String = "Batch Not Have Any Step"
+) : MigranException(message)
+
+class StepReaderNotFoundException(
+    message: String = "Batch Reader can't be null"
+) : MigranException(message)
+
+class StepWriterNotFoundException(
+    message: String = "Batch Writer can't be null"
+) : MigranException(message)

@@ -7,6 +7,7 @@ import org.springframework.batch.core.configuration.annotation.JobBuilderFactory
 import org.springframework.batch.core.configuration.support.ReferenceJobFactory
 import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
+import yuk.database.migran.BatchNotHaveStepException
 
 @Component
 @Scope(scopeName = "prototype")
@@ -21,12 +22,15 @@ class BatchJobBuilder(
         this.name = name
     }
 
-    fun <I, O> setStep(batchStepBuilder: BatchStepBuilder<I, O>, f: (BatchStepBuilder<I, O>) -> Unit) {
+    fun <I, O> addStep(batchStepBuilder: BatchStepBuilder<I, O>, f: (BatchStepBuilder<I, O>) -> Unit) {
         f(batchStepBuilder)
         stepList.add(batchStepBuilder.build())
     }
 
     fun build(): Job {
+        if (stepList.isEmpty())
+            throw BatchNotHaveStepException()
+
         var jobBuilder = jobBuilderFactory.get(name)
             .preventRestart()
             .start(stepList.removeFirst())

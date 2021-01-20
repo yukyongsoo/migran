@@ -8,8 +8,10 @@ import java.sql.PreparedStatement
 import javax.sql.DataSource
 
 class StepWriterBuilder<O>(private val dataSource: DataSource) {
-    fun getItemWriter(stepName: String, f: () -> O): ItemWriter<O> {
-        return ItemWriter<O> { f() }
+    fun getItemWriter(stepName: String, f: (DataSource, List<O>) -> O): ItemWriter<O> {
+        return ItemWriter<O> { it ->
+            f(dataSource, it)
+        }
     }
 
     fun getJdbcItemWriter(sql: String): ItemWriter<O> {

@@ -17,15 +17,15 @@ class TestBatch(
     fun initialize() {
         batchJobBuilder.setBatchName("testBatch")
         batchStepBuilder.setBasicData("testStep", 10)
-        batchJobBuilder.setStep(batchStepBuilder) {
+        batchJobBuilder.addStep(batchStepBuilder) {
             val reader = getTestReader(it.getReaderBuilder("mathflat"))
-            it.addReader(reader)
+            it.setReader(reader)
 
             val processor = getTestProcessor(it.getProcessBuilder("mathflat"))
-            it.addProcess(processor)
+            it.setProcessor(processor)
 
             val writer = getTestWriter(it.getWriterBuilder("mathflat"))
-            it.addWriter(writer)
+            it.setWriter(writer)
         }
 
         batchJobBuilder.build()
@@ -48,7 +48,7 @@ class TestBatch(
     }
 
     private fun getTestWriter(writerBuilder: StepWriterBuilder<String?>): ItemWriter<String?> {
-        return writerBuilder.getItemWriter("testWriteStep") {
+        return writerBuilder.getItemWriter("testWriteStep") { _, _ ->
             println("asdfasdf")
             return@getItemWriter "asdfasdf"
         }

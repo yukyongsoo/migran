@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
 import yuk.database.migran.DataSourceNotFoundException
+import yuk.database.migran.StepReaderNotFoundException
+import yuk.database.migran.StepWriterNotFoundException
 import yuk.database.migran.batch.sms.MathflatSms
 import javax.sql.DataSource
 
@@ -23,9 +25,9 @@ class BatchStepBuilder<I, O>(
     private var stepName: String = ""
     private var chunkSize: Int = 0
 
-    private val readerList: MutableList<ItemReader<I>> = mutableListOf()
-    private val processList: MutableList<ItemProcessor<I, O>> = mutableListOf()
-    private val writerList: MutableList<ItemWriter<O>> = mutableListOf()
+    private var reader: ItemReader<I>? = null
+    private var process: ItemProcessor<I, O>? = null
+    private var writer: ItemWriter<O>? = null
 
     fun setBasicData(stepName: String, chunkSize: Int) {
         this.stepName = stepName
@@ -55,38 +57,38 @@ class BatchStepBuilder<I, O>(
         }
     }
 
-    fun addReader(itemReader: ItemReader<I>) {
-        readerList.add(itemReader)
+    fun setReader(itemReader: ItemReader<I>) {
+        reader = itemReader
     }
 
-    fun addProcess(itemProcessor: ItemProcessor<I, O>) {
-        processList.add(itemProcessor)
+    fun setProcessor(itemProcessor: ItemProcessor<I, O>) {
+        process = itemProcessor
     }
 
-    fun addWriter(itemWriter: ItemWriter<O>) {
-        writerList.add(itemWriter)
+    fun setWriter(itemWriter: ItemWriter<O>) {
+        writer = itemWriter
     }
 
     fun build(): Step {
         var builder = stepBuilderFactory.get(stepName)
             .chunk<I, O>(chunkSize)
 
-        readerList.forEach {
-            builder = builder.reader(it)
-        }
+        if (reader == null)
+            throw StepReaderNotFoundException()
 
-        processList.forEach {
-            builder = builder.processor(it)
-        }
+        if (writer == null)
+            throw  StepWriterNotFoundException()
 
-        writerList.forEach {
-            builder = builder.writer(it)
-        }
+        builder = builder.reader(reader!!)
+        builder = process?.let { builder.processor(it) } ?: builder
+        builder = builder.writer(writer!!)
 
-        readerList.clear()
-        processList.clear()
-        writerList.clear()
+        val step = builder.build()
 
-        return builder.build()
+        reader = null
+        writer = null
+        process = null
+
+        return step
     }
 }

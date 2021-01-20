@@ -19,15 +19,15 @@ class MathflatSmsResultBatch(
     fun initialize() {
         batchJobBuilder.setBatchName("sms")
         batchStepBuilder.setBasicData("mathflatSms", 10)
-        batchJobBuilder.setStep(batchStepBuilder) {
+        batchJobBuilder.addStep(batchStepBuilder) {
             val reader = getReader(it.getReaderBuilder("mathflat"))
-            it.addReader(reader)
+            it.setReader(reader)
 
             val processor = getProcessor(it.getProcessBuilder("mathflat"))
-            it.addProcess(processor)
+            it.setProcessor(processor)
 
             val writer = getWriter(it.getWriterBuilder("mathflat"))
-            it.addWriter(writer)
+            it.setWriter(writer)
         }
 
         batchJobBuilder.build()

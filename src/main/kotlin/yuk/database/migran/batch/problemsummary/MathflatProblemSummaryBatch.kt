@@ -3,7 +3,6 @@ package yuk.database.migran.batch.problemsummary
 import org.springframework.batch.item.ItemProcessor
 import org.springframework.batch.item.ItemReader
 import org.springframework.batch.item.ItemWriter
-import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.stereotype.Service
 import yuk.database.migran.base.*
@@ -18,15 +17,15 @@ class MathflatProblemSummaryBatch(
     fun initialize() {
         batchJobBuilder.setBatchName("summary")
         batchStepBuilder.setBasicData("mathflatSummary", 100)
-        batchJobBuilder.setStep(batchStepBuilder) {
+        batchJobBuilder.addStep(batchStepBuilder) {
             val reader = getReader(it.getReaderBuilder("mathflat"))
-            it.addReader(reader)
+            it.setReader(reader)
 
             val processor = getProcessor(it.getProcessBuilder("mathflat"))
-            it.addProcess(processor)
+            it.setProcessor(processor)
 
             val writer = getWriter(it.getWriterBuilder("mathflat"))
-            it.addWriter(writer)
+            it.setWriter(writer)
         }
 
         batchJobBuilder.build()

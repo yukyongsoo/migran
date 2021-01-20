@@ -25,9 +25,9 @@ class StepReaderBuilder<I>(val dataSource: DataSource, val chunkSize: Int) {
             .build()
     }
 
-    fun getItemReader(stepName: String, f: () -> I?): ItemReader<I> {
+    fun getItemReader(stepName: String, f: (DataSource) -> I?): ItemReader<I> {
         return ItemReader<I> {
-            f()
+            f(dataSource)
         }
     }
 }
