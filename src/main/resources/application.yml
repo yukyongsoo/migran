@@ -23,9 +23,10 @@ spring:
     jdbc:
       initialize-schema: always
   batch:
-    initialize-schema: always
     job:
       enabled: false
+    jdbc:
+      initialize-schema: always
 cloud:
   aws:
     credentials:

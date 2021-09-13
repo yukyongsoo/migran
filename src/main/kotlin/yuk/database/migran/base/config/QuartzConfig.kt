@@ -16,7 +16,11 @@ class QuartzConfig(
     @PostConstruct
     fun initialize() {
         jobList.forEach {
-            val jobDetail = buildJobDetail<QuartzJob>(it.name, it.desc, mapOf("batchName" to it.batchName))
+            val jobDetail = buildJobDetail<QuartzJob>(it.name, it.desc, mapOf("jobName" to it.batchName))
+
+            val jobKey = JobKey.jobKey(it.batchName)
+            if(schedulerFactoryBean.scheduler.checkExists(jobKey))
+                schedulerFactoryBean.scheduler.deleteJob(jobKey)
 
             schedulerFactoryBean.scheduler.scheduleJob(
                 jobDetail,

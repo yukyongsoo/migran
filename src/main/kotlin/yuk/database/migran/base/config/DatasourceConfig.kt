@@ -5,6 +5,7 @@ import org.springframework.boot.jdbc.DataSourceBuilder
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary
+import org.springframework.jdbc.datasource.DataSourceTransactionManager
 import javax.sql.DataSource
 
 @Configuration
@@ -16,15 +17,7 @@ class DatasourceConfig {
         return DataSourceBuilder.create().build()
     }
 
-    @Bean(name = ["pulley"])
-    @ConfigurationProperties(prefix = "spring.datasource.pulley")
-    fun getPulleyDataSource(): DataSource {
-        return DataSourceBuilder.create().build()
-    }
-
-    @Bean(name = ["mathflat"])
-    @ConfigurationProperties(prefix = "spring.datasource.mathflat")
-    fun getMathflatDataSource(): DataSource {
-        return DataSourceBuilder.create().build()
-    }
+    @Primary
+    @Bean(name = ["txManager"])
+    fun getTxManager() = DataSourceTransactionManager(batchDataSource())
 }

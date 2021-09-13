@@ -5,7 +5,6 @@ import org.springframework.batch.core.configuration.annotation.StepBuilderFactor
 import org.springframework.batch.item.ItemProcessor
 import org.springframework.batch.item.ItemReader
 import org.springframework.batch.item.ItemWriter
-import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
@@ -13,7 +12,6 @@ import org.springframework.transaction.PlatformTransactionManager
 import yuk.database.migran.DataSourceNotFoundException
 import yuk.database.migran.StepReaderNotFoundException
 import yuk.database.migran.StepWriterNotFoundException
-import yuk.database.migran.batch.sms.MathflatSms
 import javax.sql.DataSource
 
 @Component
